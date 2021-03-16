@@ -4,6 +4,8 @@ from models.bert import BertClassifier, BertFeaturizer
 from models.resnet_multispectral import ResNet18
 from models.layers import Identity
 from models.gnn import GINVirtual
+from models.faster_rcnn import faster_rcnn
+
 
 def initialize_model(config, d_out):
     if config.model == 'resnet18_ms':
@@ -26,6 +28,8 @@ def initialize_model(config, d_out):
         model = nn.Linear(out_features=d_out, **config.model_kwargs)
     elif config.model == 'gin-virtual':
         model = GINVirtual(num_tasks=d_out, **config.model_kwargs)
+    elif config.model == 'faster_rcnn':
+        model = faster_rcnn(num_classes=d_out, **config.model_kwargs)
     else:
         raise ValueError('Model not recognized.')
     return model

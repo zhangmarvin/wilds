@@ -15,7 +15,7 @@ dataset_defaults = {
         'irm_lambda': 1.0,
         'coral_penalty_weight': 10.0,
     },
-    'bdd100k': {
+    'bdd100k-cls': {
         'split_scheme': 'official',
         'model': 'resnet50',
         'model_kwargs': {'pretrained': True},
@@ -31,6 +31,22 @@ dataset_defaults = {
         'algo_log_metric': 'multitask_accuracy',
         'train_transform': 'image_base',
         'eval_transform': 'image_base',
+    },
+    'bdd100k-det': {
+        'split_scheme': 'official',
+        'model': 'faster_rcnn',
+        'loss_function': 'detection_loss',
+        'val_metric': 'acc_all',
+        'val_metric_decreasing': False,
+        'optimizer': 'SGD',
+        'optimizer_kwargs': {'momentum': 0.9},
+        'batch_size': 2,
+        'lr': 0.005,
+        'weight_decay': 0.0005,
+        'n_epochs': 10,
+        'algo_log_metric': None,  #TODO
+        'train_transform': None,
+        'eval_transform': None,
     },
     'camelyon17': {
         'split_scheme': 'official',

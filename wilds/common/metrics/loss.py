@@ -82,3 +82,22 @@ class MultiTaskLoss(MultiTaskMetric):
         """
         return maximum(metrics)
 
+class DetectionLoss(Metric):
+    def __init__(self, name=None):
+        if name is None:
+            name = 'loss'
+        super().__init__(name=name)
+
+    def _compute(self, y_pred, y_true):
+        aux = y_pred[0]['aux_outputs']
+        objectness, pred_bbox_deltas, rpn_labels, rpn_regression_targets = \
+                aux['objectness'], aux['pred_bbox_deltas'], aux['rpn_labels'], aux['rpn_regression_targets']
+        class_logits, box_regression, roi_labels, roi_regression_targets = \
+                aux['class_logits'], aux['box_regression'], aux['roi_labels'], aux['roi_regression_targets']
+        loss_objectness, loss_rpn_box_reg = self._compute_rpn_loss(
+            objectness, pred_bbox_deltas, rpn_labels, rpn_regression_targets,
+        )
+        loss_classifier, loss_box_reg = self._compute_roi_loss(
+            class_logits, box_regression, roi_labels, roi_regression_targets,
+        )
+        return loss_objectness + loss_rpn_box_reg + loss_classifier + loss_box_reg
